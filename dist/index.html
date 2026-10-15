@@ -8,7 +8,7 @@
   <title>8方雲集員工排班程式</title>
   <link rel="manifest" href="manifest.json?v=4">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -16,7 +16,7 @@
     <div class="brand-mark" aria-hidden="true">8</div>
     <p class="eyebrow">手機排班工具</p>
     <h1>8方雲集<br>員工排班程式</h1>
-    <p class="login-copy">管理員可排班及維護員工；員工可快速查看本月班表。</p>
+    <p class="login-copy">管理員可排班與核准請假；員工可用手機查看班表並提出休假申請。</p>
     <form id="login-form" class="login-card">
       <label for="pin">登入密碼</label>
       <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="請輸入密碼" required aria-describedby="login-hint pin-error">
@@ -65,20 +65,25 @@
         <div class="weekday-row"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
         <div id="calendar-grid" class="calendar-grid"></div>
         <div id="day-detail" class="panel day-detail"><p class="muted">點選日期查看當天安排。</p></div>
-      </section>
-
-      <section id="summary" class="page">
-        <div class="section-heading"><div><p class="eyebrow">整月檢視</p><h2>正職月休總表</h2></div></div>
-        <div class="month-row summary-month-row">
-          <button class="icon-button month-nav" data-month="-1" aria-label="總表上一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-          <div><span id="summary-month-label" class="month-label"></span><small>左右滑動查看整月</small></div>
-          <button class="icon-button month-nav" data-month="1" aria-label="總表下一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
-        </div>
-        <div class="summary-legend" aria-label="總表圖例"><span><i class="legend-rest"></i>休假</span><span><i class="legend-work"></i>上班</span></div>
-        <div class="roster-wrap" tabindex="0" aria-label="正職月休總表，可左右滑動">
+        <div class="section-heading summary-inline-heading"><div><p class="eyebrow">整月檢視</p><h2>員工班表總表</h2></div></div>
+        <div class="summary-legend" aria-label="總表圖例"><span><i class="legend-rest"></i>休假／未排班</span><span><i class="legend-work"></i>上班</span></div>
+        <div class="roster-wrap" tabindex="0" aria-label="員工整月總表，可左右滑動">
           <table id="roster-table" class="roster-table"></table>
         </div>
-        <p class="helper summary-helper">Admin 可直接點總表中的日期格，切換該員工上班或休假。</p>
+        <p class="helper summary-helper">Admin 可點日期格切換上班／休假，再點當日明細修改班別時間。</p>
+      </section>
+
+      <section id="requests" class="page">
+        <div class="section-heading"><div><p class="eyebrow">手機申請</p><h2>休假申請</h2></div></div>
+        <form id="leave-form" class="panel form-stack">
+          <label for="leave-date">休假日期</label>
+          <input id="leave-date" type="date" required>
+          <label for="leave-reason">原因／備註</label>
+          <textarea id="leave-reason" rows="3" maxlength="120" placeholder="例如：家中有事"></textarea>
+          <button class="button primary" type="submit">送出申請</button>
+          <p class="helper">送出後須由 Admin 核准；核准前不會變更班表。</p>
+        </form>
+        <section class="panel"><div class="section-heading compact-heading"><div><p class="eyebrow">處理狀態</p><h2 id="request-list-title">我的申請</h2></div></div><div id="request-list"></div></section>
       </section>
 
       <section id="employees" class="page">
@@ -94,17 +99,22 @@
           <div class="input-suffix"><input id="rest-target" type="number" min="1" max="15"><span>天</span></div>
           <label for="min-staff">每日最低正職人數</label>
           <div class="input-suffix"><input id="min-staff" type="number" min="1" max="20"><span>人</span></div>
-          <p class="helper">目前先以整日人數判斷；下一版可再細分早班、午班與晚班最低人數。</p>
+          <label for="pair-a">盡量不同班次：員工 A</label>
+          <select id="pair-a"></select>
+          <label for="pair-b">員工 B</label>
+          <select id="pair-b"></select>
+          <p class="helper">兩人同日上班且時間重疊時顯示軟性警示；Admin 仍可覆寫，但必須填寫原因。</p>
           <button class="button primary admin-only" type="submit">儲存設定</button>
         </form>
-        <section class="panel"><p class="eyebrow">版本資訊</p><h2>第一版 PWA 原型</h2><p class="muted">支援 iPhone Safari 與 Android Chrome 加入主畫面。雲端帳號、跨手機同步與正式權限控管將在接上資料庫後啟用。</p></section>
+        <section class="panel"><div class="section-heading compact-heading"><div><p class="eyebrow">追蹤紀錄</p><h2>最近修改</h2></div></div><div id="audit-list"></div></section>
+        <section class="panel"><p class="eyebrow">版本資訊</p><h2>雲端 PWA</h2><p class="muted">支援 iPhone Safari 與 Android Chrome 加入主畫面；班表、休假申請與修改紀錄會同步儲存。</p></section>
       </section>
     </main>
 
     <nav class="bottom-nav" aria-label="主要功能">
       <button class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg><span>總覽</span></button>
       <button class="nav-item" data-page="calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4V5zm0 5h16M8 3v4m8-4v4"/></svg><span>月曆</span></button>
-      <button class="nav-item" data-page="summary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4V4zm0 5h16M9 4v16m5-11v11"/></svg><span>總表</span></button>
+      <button class="nav-item" data-page="requests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h4"/></svg><span>請假</span></button>
       <button class="nav-item" data-page="employees"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2m7-10a4 4 0 100-8 4 4 0 000 8zm13 10v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>員工</span></button>
       <button class="nav-item" data-page="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm7.4-3.5a7.4 7.4 0 00-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 00-1.7-1L15 3.5h-4L10.6 6a8 8 0 00-1.7 1l-2.4-1-2 3.4 2 1.5a7.4 7.4 0 000 2L4.5 14.5l2 3.4 2.4-1a8 8 0 001.7 1l.4 2.6h4l.4-2.6a8 8 0 001.7-1l2.4 1 2-3.4-2-1.5a7.4 7.4 0 00.1-1z"/></svg><span>設定</span></button>
     </nav>
@@ -121,7 +131,25 @@
       <button class="button primary" type="submit">儲存員工</button>
     </form>
   </dialog>
-  <script src="app.js?v=7"></script>
+  <dialog id="identity-dialog">
+    <form id="identity-form" method="dialog">
+      <div class="dialog-heading"><h2>請選擇你的姓名</h2></div>
+      <label for="identity-employee">員工</label><select id="identity-employee" required></select>
+      <p class="helper">只會顯示與送出自己的休假申請，不能修改班表。</p>
+      <button class="button primary" type="submit">進入班表</button>
+    </form>
+  </dialog>
+  <dialog id="shift-dialog">
+    <form id="shift-form" method="dialog">
+      <div class="dialog-heading"><h2 id="shift-dialog-title">編輯班別</h2><button id="close-shift-dialog" class="icon-button" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <input id="shift-employee-id" type="hidden"><input id="shift-day" type="hidden">
+      <label for="shift-status">當日狀態</label><select id="shift-status"><option value="work">上班</option><option value="off">休假／未排班</option></select>
+      <div class="time-row"><div><label for="shift-start">上班</label><input id="shift-start" type="time"></div><div><label for="shift-end">下班</label><input id="shift-end" type="time"></div></div>
+      <label for="shift-note">修改原因</label><textarea id="shift-note" rows="3" maxlength="120" placeholder="若有搭班重疊，必須說明覆寫原因"></textarea>
+      <p id="shift-warning" class="field-error" role="alert" hidden></p>
+      <button class="button primary" type="submit">儲存班別</button>
+    </form>
+  </dialog>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
-
