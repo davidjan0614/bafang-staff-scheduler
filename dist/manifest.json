@@ -1,0 +1,12 @@
+{
+  "name":"8方雲集員工排班程式",
+  "short_name":"8方排班",
+  "description":"員工排班、月休八天與人力檢查工具",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f0fdfa",
+  "theme_color":"#0f766e",
+  "lang":"zh-Hant",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
+

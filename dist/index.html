@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="8方雲集員工排班與月休管理工具">
+  <title>8方雲集員工排班程式</title>
+  <link rel="manifest" href="manifest.json?v=4">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <section id="login" class="login-shell">
+    <div class="brand-mark" aria-hidden="true">8</div>
+    <p class="eyebrow">手機排班工具</p>
+    <h1>8方雲集<br>員工排班程式</h1>
+    <p class="login-copy">管理員可排班及維護員工；員工可快速查看本月班表。</p>
+    <form id="admin-login" class="login-card">
+      <label for="pin">Admin 管理者密碼</label>
+      <input id="pin" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="測試密碼：8888">
+      <p id="pin-error" class="field-error" hidden>密碼不正確，測試版密碼為 8888。</p>
+      <button class="button primary" type="submit">進入管理模式</button>
+    </form>
+    <button id="viewer-login" class="button ghost" type="button">以員工身分查看</button>
+    <p class="prototype-note">目前為第一版原型，資料只儲存在這部裝置。</p>
+  </section>
+
+  <div id="app" class="app-shell" hidden>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">8方雲集員工排班程式</p>
+        <h1 id="page-title">本月總覽</h1>
+      </div>
+      <button id="logout" class="icon-button" aria-label="登出" title="登出">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3m9-9h7a2 2 0 012 2v14a2 2 0 01-2 2h-7"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <section id="dashboard" class="page active">
+        <div class="month-row">
+          <button class="icon-button month-nav" data-month="-1" aria-label="上一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><span id="month-label" class="month-label"></span><small>月休目標：正職 8 天</small></div>
+          <button class="icon-button month-nav" data-month="1" aria-label="下一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>正職</span><strong id="fulltime-count">0</strong><small>位在職</small></article>
+          <article class="stat-card"><span>已達標</span><strong id="goal-count">0</strong><small>休滿 8 天</small></article>
+          <article class="stat-card warning"><span>人力警告</span><strong id="warning-count">0</strong><small>天需調整</small></article>
+        </div>
+        <section class="panel">
+          <div class="section-heading"><div><p class="eyebrow">休假進度</p><h2>本月月休統計</h2></div><button id="auto-schedule" class="button compact primary admin-only" type="button">建議排休</button></div>
+          <div id="goal-list" class="goal-list"></div>
+        </section>
+        <section class="panel tip-panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a10 10 0 100-20 10 10 0 000 20zm0-14v5m0 3h.01"/></svg>
+          <div><strong>排班原則</strong><p>月休 8 天是目標；若排休後低於每日最低正職人數，系統會顯示警告，由 Admin 決定調整。</p></div>
+        </section>
+      </section>
+
+      <section id="calendar" class="page">
+        <div class="section-heading"><div><p class="eyebrow">月曆</p><h2 id="calendar-title"></h2></div><button id="clear-schedule" class="button compact secondary admin-only" type="button">清除排休</button></div>
+        <div class="weekday-row"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+        <div id="calendar-grid" class="calendar-grid"></div>
+        <div id="day-detail" class="panel day-detail"><p class="muted">點選日期查看當天安排。</p></div>
+      </section>
+
+      <section id="summary" class="page">
+        <div class="section-heading"><div><p class="eyebrow">整月檢視</p><h2>正職月休總表</h2></div></div>
+        <div class="month-row summary-month-row">
+          <button class="icon-button month-nav" data-month="-1" aria-label="總表上一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div><span id="summary-month-label" class="month-label"></span><small>左右滑動查看整月</small></div>
+          <button class="icon-button month-nav" data-month="1" aria-label="總表下一個月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="summary-legend" aria-label="總表圖例"><span><i class="legend-rest"></i>休假</span><span><i class="legend-work"></i>上班</span></div>
+        <div class="roster-wrap" tabindex="0" aria-label="正職月休總表，可左右滑動">
+          <table id="roster-table" class="roster-table"></table>
+        </div>
+        <p class="helper summary-helper">Admin 可直接點總表中的日期格，切換該員工上班或休假。</p>
+      </section>
+
+      <section id="employees" class="page">
+        <div class="section-heading"><div><p class="eyebrow">Admin</p><h2>員工管理</h2></div><button id="add-employee" class="button compact primary admin-only" type="button">新增員工</button></div>
+        <div class="filter-row"><button class="chip active" data-filter="active">在職</button><button class="chip" data-filter="all">全部</button></div>
+        <div id="employee-list" class="employee-list"></div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="section-heading"><div><p class="eyebrow">規則</p><h2>排班設定</h2></div></div>
+        <form id="settings-form" class="panel form-stack">
+          <label for="rest-target">正職每月休假目標</label>
+          <div class="input-suffix"><input id="rest-target" type="number" min="1" max="15"><span>天</span></div>
+          <label for="min-staff">每日最低正職人數</label>
+          <div class="input-suffix"><input id="min-staff" type="number" min="1" max="20"><span>人</span></div>
+          <p class="helper">目前先以整日人數判斷；下一版可再細分早班、午班與晚班最低人數。</p>
+          <button class="button primary admin-only" type="submit">儲存設定</button>
+        </form>
+        <section class="panel"><p class="eyebrow">版本資訊</p><h2>第一版 PWA 原型</h2><p class="muted">支援 iPhone Safari 與 Android Chrome 加入主畫面。雲端帳號、跨手機同步與正式權限控管將在接上資料庫後啟用。</p></section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="主要功能">
+      <button class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg><span>總覽</span></button>
+      <button class="nav-item" data-page="calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4V5zm0 5h16M8 3v4m8-4v4"/></svg><span>月曆</span></button>
+      <button class="nav-item" data-page="summary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4V4zm0 5h16M9 4v16m5-11v11"/></svg><span>總表</span></button>
+      <button class="nav-item" data-page="employees"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2m7-10a4 4 0 100-8 4 4 0 000 8zm13 10v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>員工</span></button>
+      <button class="nav-item" data-page="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm7.4-3.5a7.4 7.4 0 00-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 00-1.7-1L15 3.5h-4L10.6 6a8 8 0 00-1.7 1l-2.4-1-2 3.4 2 1.5a7.4 7.4 0 000 2L4.5 14.5l2 3.4 2.4-1a8 8 0 001.7 1l.4 2.6h4l.4-2.6a8 8 0 001.7-1l2.4 1 2-3.4-2-1.5a7.4 7.4 0 00.1-1z"/></svg><span>設定</span></button>
+    </nav>
+  </div>
+
+  <dialog id="employee-dialog">
+    <form id="employee-form" method="dialog">
+      <div class="dialog-heading"><h2 id="dialog-title">新增員工</h2><button id="close-dialog" class="icon-button" type="button" aria-label="關閉"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <input id="employee-id" type="hidden">
+      <label for="employee-name">姓名</label><input id="employee-name" required autocomplete="off">
+      <label for="employee-type">類別</label><select id="employee-type"><option value="fulltime">正職</option><option value="pt">PT</option></select>
+      <div class="time-row"><div><label for="start-time">上班</label><input id="start-time" type="time" required></div><div><label for="end-time">下班</label><input id="end-time" type="time" required></div></div>
+      <label for="employee-note">班別／備註</label><input id="employee-note" placeholder="例如：平日（晚上）">
+      <button class="button primary" type="submit">儲存員工</button>
+    </form>
+  </dialog>
+  <script src="app.js?v=4"></script>
+</body>
+</html>
+
