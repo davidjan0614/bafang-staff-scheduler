@@ -17,17 +17,12 @@
     <p class="eyebrow">手機排班工具</p>
     <h1>8方雲集<br>員工排班程式</h1>
     <p class="login-copy">管理員可排班及維護員工；員工可快速查看本月班表。</p>
-    <form id="admin-login" class="login-card">
-      <label for="pin">Admin 管理者密碼</label>
-      <input id="pin" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="測試密碼：8888">
-      <p id="pin-error" class="field-error" hidden>密碼不正確，測試版密碼為 8888。</p>
-      <button class="button primary" type="submit">進入管理模式</button>
-    </form>
-    <form id="viewer-login-form" class="login-card employee-login-card">
-      <label for="viewer-pin">員工登入密碼</label>
-      <input id="viewer-pin" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="請輸入員工密碼">
-      <p id="viewer-pin-error" class="field-error" hidden>員工密碼不正確。</p>
-      <button id="viewer-login" class="button secondary" type="submit">以員工身分查看</button>
+    <form id="login-form" class="login-card">
+      <label for="pin">登入密碼</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="請輸入密碼" required aria-describedby="login-hint pin-error">
+      <p id="login-hint" class="helper">系統會依密碼自動進入管理員或員工模式。</p>
+      <p id="pin-error" class="field-error" role="alert" hidden>密碼不正確，請重新輸入。</p>
+      <button class="button primary" type="submit">登入</button>
     </form>
     <p class="prototype-note">目前為第一版原型，資料只儲存在這部裝置。</p>
   </section>
@@ -126,7 +121,7 @@
       <button class="button primary" type="submit">儲存員工</button>
     </form>
   </dialog>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
 
