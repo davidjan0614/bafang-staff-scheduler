@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json?v=13">
   <link rel="icon" href="icon-192.png?v=13" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=13">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -34,9 +34,15 @@
         <p class="eyebrow">8方雲集員工排班程式</p>
         <h1 id="page-title">本月總覽</h1>
       </div>
-      <button id="logout" class="icon-button" aria-label="登出" title="登出">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3m9-9h7a2 2 0 012 2v14a2 2 0 01-2 2h-7"/></svg>
-      </button>
+      <div class="topbar-actions">
+        <div id="session-identity" class="session-identity" role="status" aria-live="polite">
+          <span id="session-avatar" class="session-avatar" aria-hidden="true">管</span>
+          <span class="session-copy"><small>目前登入</small><strong id="session-name">管理員</strong><span id="session-role">Admin</span></span>
+        </div>
+        <button id="logout" class="icon-button" aria-label="登出目前帳號" title="登出">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3m9-9h7a2 2 0 012 2v14a2 2 0 01-2 2h-7"/></svg>
+        </button>
+      </div>
     </header>
 
     <main>
@@ -145,6 +151,6 @@
       <button class="button primary" type="submit">儲存班別</button>
     </form>
   </dialog>
-  <script src="app.js?v=11"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
