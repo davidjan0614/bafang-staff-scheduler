@@ -5,6 +5,7 @@
 - 名稱：8方雲集員工排班程式
 - 平台：iPhone／Android 共用 PWA，亦可於電腦和平板使用
 - 最後交付：完整原始碼放入使用者指定的 GitHub repository
+- 公開網址：GitHub Pages；員工入口不可空白，暫時共用密碼為 1688。
 
 ## 已確認人員
 
