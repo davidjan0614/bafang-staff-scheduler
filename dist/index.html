@@ -19,8 +19,8 @@
     <p class="login-copy">管理員可排班與核准請假；員工可用手機查看班表並提出休假申請。</p>
     <form id="login-form" class="login-card">
       <label for="pin">登入密碼</label>
-      <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="請輸入密碼" required aria-describedby="login-hint pin-error">
-      <p id="login-hint" class="helper">系統會依密碼自動進入管理員或員工模式。</p>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" placeholder="請輸入四位數密碼" required aria-describedby="login-hint pin-error">
+      <p id="login-hint" class="helper">請輸入自己的四位數密碼；管理員使用管理密碼。</p>
       <p id="pin-error" class="field-error" role="alert" hidden>密碼不正確，請重新輸入。</p>
       <button class="button primary" type="submit">登入</button>
     </form>
@@ -128,15 +128,9 @@
       <label for="employee-type">類別</label><select id="employee-type"><option value="fulltime">正職</option><option value="pt">PT</option></select>
       <div class="time-row"><div><label for="start-time">上班</label><input id="start-time" type="time" required></div><div><label for="end-time">下班</label><input id="end-time" type="time" required></div></div>
       <label for="employee-note">班別／備註</label><input id="employee-note" placeholder="例如：平日（晚上）">
+      <label for="employee-pin">員工四位數密碼</label><input id="employee-pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" placeholder="編輯時留空代表不變" aria-describedby="employee-pin-help">
+      <p id="employee-pin-help" class="helper">新增員工時必填；修改員工時，只有要重設密碼才需輸入。</p>
       <button class="button primary" type="submit">儲存員工</button>
-    </form>
-  </dialog>
-  <dialog id="identity-dialog">
-    <form id="identity-form" method="dialog">
-      <div class="dialog-heading"><h2>請選擇你的姓名</h2></div>
-      <label for="identity-employee">員工</label><select id="identity-employee" required></select>
-      <p class="helper">只會顯示與送出自己的休假申請，不能修改班表。</p>
-      <button class="button primary" type="submit">進入班表</button>
     </form>
   </dialog>
   <dialog id="shift-dialog">
@@ -150,6 +144,6 @@
       <button class="button primary" type="submit">儲存班別</button>
     </form>
   </dialog>
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
