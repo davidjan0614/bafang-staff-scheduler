@@ -9,10 +9,14 @@ const INITIAL_EMPLOYEES=[
  {id:'e8',name:'紫捷',type:'pt',start:'18:00',end:'21:00',note:'平日／假日',active:true}
 ];
 const STORE_KEY='bafang-scheduler-v1';
+const SUPABASE_URL='https://wyimymspkaozrugsxhyw.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5aW15bXNwa2FvenJ1Z3N4aHl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMjg3OTksImV4cCI6MjEwNzYwNDc5OX0.i5FHA3WjZSCwOZUYib0sPfKnvXuR3Er2zU0-as5bOUs';
 const now=new Date();
-let state=loadState();let role='viewer';let currentMonth=new Date(now.getFullYear(),now.getMonth(),1);let selectedDay=now.getDate();let filter='active';
+let state=loadState();let role='viewer';let sessionPin='';let cloudSaveTimer;let currentMonth=new Date(now.getFullYear(),now.getMonth(),1);let selectedDay=now.getDate();let filter='active';
 function loadState(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY));if(s?.employees)return s}catch{}return{employees:INITIAL_EMPLOYEES,settings:{restTarget:8,minStaff:3},schedules:{}}}
-function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state))}
+async function cloudRequest(name,body){const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(body)});if(!response.ok)throw new Error('cloud request failed');return response.json()}
+async function loadCloud(pin){const data=await cloudRequest('load_schedule',{p_password:pin});if(!data?.employees)throw new Error('invalid cloud data');state=data;localStorage.setItem(STORE_KEY,JSON.stringify(state))}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state));if(role!=='admin'||!sessionPin)return;clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(()=>cloudRequest('save_schedule',{p_password:sessionPin,p_data:state}).catch(()=>showToast('雲端儲存失敗，請檢查網路')),350)}
 function monthKey(){return `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}`}
 function daysInMonth(){return new Date(currentMonth.getFullYear(),currentMonth.getMonth()+1,0).getDate()}
 function schedule(){const key=monthKey();state.schedules[key]??={};return state.schedules[key]}
@@ -24,8 +28,8 @@ function staffOnDay(day){return activeFulltime().length-activeFulltime().filter(
 function warningDays(){let n=0;for(let d=1;d<=daysInMonth();d++)if(staffOnDay(d)<state.settings.minStaff)n++;return n}
 function showToast(message){const t=document.querySelector('#toast');t.textContent=message;t.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('show'),2200)}
 function enter(nextRole){role=nextRole;document.querySelector('#login').hidden=true;document.querySelector('#app').hidden=false;document.querySelectorAll('.admin-only').forEach(el=>el.hidden=role!=='admin');renderAll()}
-document.querySelector('#login-form').addEventListener('submit',e=>{e.preventDefault();const pin=document.querySelector('#pin');const error=document.querySelector('#pin-error');const nextRole=pin.value==='8888'?'admin':pin.value==='1688'?'viewer':null;error.hidden=Boolean(nextRole);pin.setAttribute('aria-invalid',String(!nextRole));if(nextRole)enter(nextRole);else{pin.select();pin.focus()}});
-document.querySelector('#logout').addEventListener('click',()=>{document.querySelector('#app').hidden=true;document.querySelector('#login').hidden=false;const pin=document.querySelector('#pin');pin.value='';pin.removeAttribute('aria-invalid');document.querySelector('#pin-error').hidden=true;pin.focus()});
+document.querySelector('#login-form').addEventListener('submit',async e=>{e.preventDefault();const pin=document.querySelector('#pin');const error=document.querySelector('#pin-error');const button=e.currentTarget.querySelector('button');const nextRole=pin.value==='8888'?'admin':pin.value==='1688'?'viewer':null;if(!nextRole){error.textContent='密碼不正確，請重新輸入。';error.hidden=false;pin.setAttribute('aria-invalid','true');pin.select();pin.focus();return}button.disabled=true;button.textContent='連接雲端中…';try{await loadCloud(pin.value);sessionPin=pin.value;error.hidden=true;pin.removeAttribute('aria-invalid');enter(nextRole)}catch{error.textContent='無法連接雲端，請檢查網路後重試。';error.hidden=false;pin.setAttribute('aria-invalid','true')}finally{button.disabled=false;button.textContent='登入'}});
+document.querySelector('#logout').addEventListener('click',()=>{sessionPin='';document.querySelector('#app').hidden=true;document.querySelector('#login').hidden=false;const pin=document.querySelector('#pin');pin.value='';pin.removeAttribute('aria-invalid');document.querySelector('#pin-error').hidden=true;pin.focus()});
 const titles={dashboard:'本月總覽',calendar:'月曆班表',summary:'整月總表',employees:'員工管理',settings:'排班設定'};
 document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.nav-item,.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelector(`#${b.dataset.page}`).classList.add('active');document.querySelector('#page-title').textContent=titles[b.dataset.page];window.scrollTo({top:0,behavior:'smooth'})}));
 document.querySelectorAll('[data-month]').forEach(b=>b.addEventListener('click',()=>{currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+Number(b.dataset.month),1);selectedDay=1;renderAll()}));
@@ -43,4 +47,5 @@ document.querySelector('#add-employee').addEventListener('click',()=>openEmploye
 function renderSettings(){document.querySelector('#rest-target').value=state.settings.restTarget;document.querySelector('#min-staff').value=state.settings.minStaff;document.querySelectorAll('#settings-form input').forEach(x=>x.disabled=role!=='admin')}
 document.querySelector('#settings-form').addEventListener('submit',e=>{e.preventDefault();state.settings.restTarget=Number(document.querySelector('#rest-target').value);state.settings.minStaff=Number(document.querySelector('#min-staff').value);save();renderAll();showToast('排班設定已儲存')});
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+setInterval(async()=>{if(role!=='viewer'||!sessionPin||document.querySelector('#app').hidden)return;try{await loadCloud(sessionPin);renderAll()}catch{}},30000);
 
