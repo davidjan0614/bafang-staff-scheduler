@@ -23,7 +23,12 @@
       <p id="pin-error" class="field-error" hidden>密碼不正確，測試版密碼為 8888。</p>
       <button class="button primary" type="submit">進入管理模式</button>
     </form>
-    <button id="viewer-login" class="button ghost" type="button">以員工身分查看</button>
+    <form id="viewer-login-form" class="login-card employee-login-card">
+      <label for="viewer-pin">員工登入密碼</label>
+      <input id="viewer-pin" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="請輸入員工密碼">
+      <p id="viewer-pin-error" class="field-error" hidden>員工密碼不正確。</p>
+      <button id="viewer-login" class="button secondary" type="submit">以員工身分查看</button>
+    </form>
     <p class="prototype-note">目前為第一版原型，資料只儲存在這部裝置。</p>
   </section>
 
@@ -121,7 +126,7 @@
       <button class="button primary" type="submit">儲存員工</button>
     </form>
   </dialog>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
 
