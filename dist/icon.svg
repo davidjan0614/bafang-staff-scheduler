@@ -1,2 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0f766e"/><path fill="#fff" d="M145 133c0-31 25-56 56-56h110c31 0 56 25 56 56v246c0 31-25 56-56 56H201c-31 0-56-25-56-56V133zm53 23h116v55H198v-55zm0 85h116v55H198v-55zm0 85h49v55h-49v-55zm67 0h49v55h-49v-55z"/><circle cx="171" cy="128" r="44" fill="#ea580c"/><text x="171" y="146" text-anchor="middle" font-family="Arial,sans-serif" font-size="54" font-weight="700" fill="#fff">8</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="8方排班">
+  <defs>
+    <linearGradient id="bg" x1="68" y1="44" x2="448" y2="468" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#11998E"/>
+      <stop offset="1" stop-color="#075E59"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#003F3B" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <path d="M114 92c79-44 187-41 266 16" fill="none" stroke="#6EE7D8" stroke-width="18" stroke-linecap="round" opacity=".22"/>
+  <g filter="url(#shadow)">
+    <path fill="#fff" fill-rule="evenodd" d="M256 88c-78 0-129 42-129 105 0 35 18 64 50 82-39 20-61 53-61 93 0 71 56 116 140 116s140-45 140-116c0-40-22-73-61-93 32-18 50-47 50-82 0-63-51-105-129-105Zm0 61c39 0 62 20 62 51 0 30-23 49-62 49s-62-19-62-49c0-31 23-51 62-51Zm0 153c45 0 72 23 72 59 0 37-27 61-72 61s-72-24-72-61c0-36 27-59 72-59Z"/>
+  </g>
+  <g transform="translate(320 322)" filter="url(#shadow)">
+    <rect width="134" height="134" rx="43" fill="#F97316"/>
+    <path d="m34 69 23 23 46-52" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
 
