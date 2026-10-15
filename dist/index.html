@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json?v=13">
   <link rel="icon" href="icon-192.png?v=13" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=13">
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -114,6 +114,21 @@
           <button class="button primary admin-only" type="submit">儲存設定</button>
         </form>
         <section class="panel"><div class="section-heading compact-heading"><div><p class="eyebrow">追蹤紀錄</p><h2>最近修改</h2></div></div><div id="audit-list"></div></section>
+        <section id="employee-password-panel" class="panel employee-only" hidden>
+          <div class="section-heading compact-heading"><div><p class="eyebrow">帳號安全</p><h2>變更我的密碼</h2></div></div>
+          <form id="employee-password-form" class="form-stack">
+            <label for="current-pin">目前四位數密碼</label>
+            <input id="current-pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]{4}" required>
+            <label for="new-pin">新的四位數密碼</label>
+            <input id="new-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" aria-describedby="password-help password-error" required>
+            <label for="confirm-pin">再次輸入新密碼</label>
+            <input id="confirm-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]{4}" required>
+            <label class="password-visibility"><input id="show-passwords" type="checkbox"> 顯示密碼</label>
+            <p id="password-help" class="helper">請使用四位數字，不能使用管理員密碼，也不能與其他員工相同。</p>
+            <p id="password-error" class="field-error" role="alert" hidden></p>
+            <button class="button primary" type="submit">更新我的密碼</button>
+          </form>
+        </section>
         <section class="panel"><p class="eyebrow">版本資訊</p><h2>雲端 PWA</h2><p class="muted">支援 iPhone Safari 與 Android Chrome 加入主畫面；班表、休假申請與修改紀錄會同步儲存。</p></section>
       </section>
     </main>
@@ -151,6 +166,6 @@
       <button class="button primary" type="submit">儲存班別</button>
     </form>
   </dialog>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
