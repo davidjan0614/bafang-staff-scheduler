@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json?v=13">
   <link rel="icon" href="icon-192.png?v=13" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=13">
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -72,7 +72,7 @@
         <div class="weekday-row"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
         <div id="calendar-grid" class="calendar-grid"></div>
         <div id="day-detail" class="panel day-detail"><p class="muted">點選日期查看當天安排。</p></div>
-        <div class="section-heading summary-inline-heading"><div><p class="eyebrow">整月檢視</p><h2>員工班表總表</h2></div></div>
+        <div class="section-heading summary-inline-heading"><div><p class="eyebrow">整月檢視</p><h2 id="roster-print-title">員工班表總表</h2></div><button id="print-roster" class="button compact secondary" type="button">列印總表</button></div>
         <div class="summary-legend" aria-label="總表圖例"><span><i class="legend-rest"></i>休假／未排班</span><span><i class="legend-work"></i>上班</span></div>
         <div class="roster-wrap" tabindex="0" aria-label="員工整月總表，可左右滑動">
           <table id="roster-table" class="roster-table"></table>
@@ -166,6 +166,6 @@
       <button class="button primary" type="submit">儲存班別</button>
     </form>
   </dialog>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
