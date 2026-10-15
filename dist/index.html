@@ -102,8 +102,8 @@
       </section>
 
       <section id="settings" class="page">
-        <div class="section-heading"><div><p class="eyebrow">規則</p><h2>排班設定</h2></div></div>
-        <form id="settings-form" class="panel form-stack">
+        <div class="section-heading admin-section"><div><p class="eyebrow">規則</p><h2>排班設定</h2></div></div>
+        <form id="settings-form" class="panel form-stack admin-section">
           <label for="rest-target">正職每月休假目標</label>
           <div class="input-suffix"><input id="rest-target" type="number" min="1" max="15"><span>天</span></div>
           <label for="min-staff">每日最低正職人數</label>
@@ -115,7 +115,7 @@
           <p class="helper">兩人同日上班且時間重疊時顯示軟性警示；Admin 仍可覆寫，但必須填寫原因。</p>
           <button class="button primary admin-only" type="submit">儲存設定</button>
         </form>
-        <section class="panel"><div class="section-heading compact-heading"><div><p class="eyebrow">追蹤紀錄</p><h2>最近修改</h2></div></div><div id="audit-list"></div></section>
+        <section class="panel admin-section"><div class="section-heading compact-heading"><div><p class="eyebrow">追蹤紀錄</p><h2>最近修改</h2></div></div><div id="audit-list"></div></section>
         <section id="employee-password-panel" class="panel employee-only" hidden>
           <div class="section-heading compact-heading"><div><p class="eyebrow">帳號安全</p><h2>變更我的密碼</h2></div></div>
           <form id="employee-password-form" class="form-stack">
@@ -168,6 +168,6 @@
       <button class="button primary" type="submit">儲存班別</button>
     </form>
   </dialog>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>
