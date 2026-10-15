@@ -2,6 +2,10 @@
 
 手機優先的 PWA 排班工具，可在 iPhone Safari 與 Android Chrome 使用並加入主畫面。
 
+## 線上版本
+
+https://bafang-staff-scheduler.elatedelm256.chatgpt.site/?v=4
+
 ## 第一版功能
 
 - Admin 測試登入（密碼 `8888`）與員工唯讀模式
